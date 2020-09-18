@@ -1,0 +1,6 @@
+Cells:GM12878,HELA,HMEC,HUVEC,IMR90,K562,KBM7,NHEK
+Features:H3k4me1,H3k4me2,H3k4me3,H3k9ac,H3k27ac,H3k27me3,H3k36me3,H3k79me2,H4k20me1,Ctcf,DNaseI,Pol2,Rad21,Smc3
+NumOfCells:8
+Pairs_path:EP-Pairs
+Enhancers_path:Enhancers
+Promoters_path:Promoters

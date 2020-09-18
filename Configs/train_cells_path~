@@ -1,0 +1,6 @@
+../TrainTestData/train/Gm12878_EPW_feats_train.csv
+../TrainTestData/train/HMEC_EPW_feats_train.csv
+../TrainTestData/train/HUVEC_EPW_feats_train.csv
+../TrainTestData/train/K562_EPW_feats_train.csv
+../TrainTestData/train/NHEK_EPW_feats_train.csv
+

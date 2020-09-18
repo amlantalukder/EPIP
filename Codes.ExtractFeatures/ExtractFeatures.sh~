@@ -1,0 +1,7 @@
+CONFIG_FILE=/home/student/EPI/codes/CSEPI/Configs/config_extract_features
+
+python FindWindows.py $CONFIG_FILE
+python CalculateFeature.py $CONFIG_FILE
+python AggregateFeatures.py $CONFIG_FILE
+python CombineEPFeatures.py $CONFIG_FILE
+python AddWindowFeatures.py $CONFIG_FILE

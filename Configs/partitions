@@ -1,0 +1,11 @@
+distance,corr,css
+distance,corr,css,H3k4me1_E,H3k4me1_P
+distance,corr,css,DNaseI_E,DNaseI_P
+distance,corr,css,DNaseI_E,DNaseI_P,H3k27ac_E,H3k27ac_P
+distance,corr,css,H3k4me1_E,H3k4me1_P,H3k27ac_E,H3k27ac_P
+distance,corr,css,H3k4me1_E,H3k4me1_P,H3k27ac_E,H3k27ac_P,H3k4me3_E,H3k4me3_P
+distance,corr,css,DNaseI_E,DNaseI_P,H3k27ac_E,H3k27ac_P,H3k4me3_E,H3k4me3_P
+distance,corr,css,H3k4me1_E,H3k4me1_P,H3k4me2_E,H3k4me2_P,H3k4me3_E,H3k4me3_P,H3k27ac_E,H3k27ac_P,DNaseI_E,DNaseI_P
+distance,corr,css,H3k4me1_E,H3k4me1_P,H3k4me2_E,H3k4me2_P,H3k4me3_E,H3k4me3_P,H3k9ac_E,H3k9ac_P,H3k27ac_E,H3k27ac_P,H3k27me3_E,H3k27me3_P,H3k36me3_E,H3k36me3_P,H3k79me2_E,H3k79me2_P,H4k20me1_E,H4k20me1_P,Ctcf_E,Ctcf_P,DNaseI_E,DNaseI_P
+distance,corr,css,H3k4me1_E,H3k4me1_P,H3k4me2_E,H3k4me2_P,H3k4me3_E,H3k4me3_P,H3k9ac_E,H3k9ac_P,H3k27ac_E,H3k27ac_P,H3k27me3_E,H3k27me3_P,H3k36me3_E,H3k36me3_P,H3k79me2_E,H3k79me2_P,H4k20me1_E,H4k20me1_P,Ctcf_E,Ctcf_P,DNaseI_E,DNaseI_P,Pol2_E,Pol2_P
+distance,corr,css,H3k4me1_E,H3k4me1_P,H3k4me2_E,H3k4me2_P,H3k4me3_E,H3k4me3_P,H3k9ac_E,H3k9ac_P,H3k27ac_E,H3k27ac_P,H3k27me3_E,H3k27me3_P,H3k36me3_E,H3k36me3_P,H3k79me2_E,H3k79me2_P,H4k20me1_E,H4k20me1_P,Ctcf_E,Ctcf_P,DNaseI_E,DNaseI_P,Pol2_E,Pol2_P,Rad21_E,Rad21_P,Smc3_E,Smc3_P
