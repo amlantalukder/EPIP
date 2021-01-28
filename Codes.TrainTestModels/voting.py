@@ -14,7 +14,7 @@ classification estimators.
 import numpy as np
 import pandas as pd
 
-from sklearn.base import BaseEstimator 
+from sklearn.base import BaseEstimator
 from sklearn.base import ClassifierMixin
 from sklearn.base import TransformerMixin
 from sklearn.base import clone
@@ -93,12 +93,10 @@ class VotingClassifier(BaseEstimator, ClassifierMixin, TransformerMixin):
 
         self.estimators = estimators
         self.named_estimators = dict(estimators)
-        self.voting = voting        
+        self.voting = voting
         self.partitions = partitions
         self.weights = self._calculate_partition_weight(partitions, weigh_num_feats)
         self.mask_weights = []
-        
-
 
     # Samaneh
     def _partition_data(self, X, partition):
@@ -108,8 +106,8 @@ class VotingClassifier(BaseEstimator, ClassifierMixin, TransformerMixin):
             if (set(part).issubset(set(X.columns))):
                 X_list.append(X[part])
             else:
-                X_list.append(pd.DataFrame({'A' : []}))
-                               
+                X_list.append(pd.DataFrame({'A': []}))
+
         return X_list
 
     # Samaneh
@@ -122,7 +120,6 @@ class VotingClassifier(BaseEstimator, ClassifierMixin, TransformerMixin):
             return weights
         else:
             return [1] * len(partitions)
-
 
     def fit(self, X, y):
         """ Fit the estimators.
@@ -139,9 +136,8 @@ class VotingClassifier(BaseEstimator, ClassifierMixin, TransformerMixin):
         Returns
         -------
         self : object
-        """        
-             
-        
+        """
+
         if isinstance(y, np.ndarray) and len(y.shape) > 1 and y.shape[1] > 1:
             raise NotImplementedError('Multilabel and multi-output'
                                       ' classification is not supported.')
@@ -164,21 +160,20 @@ class VotingClassifier(BaseEstimator, ClassifierMixin, TransformerMixin):
         self.le_.fit(y)
         self.classes_ = self.le_.classes_
         self.estimators_ = []
-        
-        X_list = self._partition_data(X, self.partitions)        
-        
-        for i in range(0, len(self.estimators)):            
+
+        X_list = self._partition_data(X, self.partitions)
+
+        for i in range(0, len(self.estimators)):
             name = self.estimators[i][0]
             clf = self.estimators[i][1]
             X = X_list[i]
             if X.empty:
                 self.estimators_.append(clf)
-            else:                
+            else:
                 fitted_clf = clf.fit(X, self.le_.transform(y))
                 self.estimators_.append(fitted_clf)
-        
+
         return self
-    
 
     def predict(self, X):
         """ Predict class labels for X.
@@ -194,40 +189,41 @@ class VotingClassifier(BaseEstimator, ClassifierMixin, TransformerMixin):
         maj : array-like, shape = [n_samples]
             Predicted class labels.
         """
-        
-        X_list = self._partition_data(X, self.partitions) 
-        
+
+        X_list = self._partition_data(X, self.partitions)
+
         check_is_fitted(self, 'estimators_')
         if self.voting == 'soft':
             maj = np.argmax(self.predict_proba(X_list), axis=1)
 
         else:  # 'hard' voting
             # Samaneh
-#             print X_list
+            #             print X_list
             predictions = self._predict(X_list)
             new_weights = []
             cnt = 0
             for i in range(len(X_list)):
                 X = X_list[i]
                 cnt += len(X.columns)
-                if (X.empty == False):                    
+                if (X.empty == False):
                     new_weights.append(self.weights[i])
-#                 else:
-#                     print "missing feature in predict function"
-            
-            masking_missing_partitions = np.multiply(new_weights, self.mask_weights)  
-            maj = np.apply_along_axis(lambda x: np.argmax(np.bincount(x, weights=masking_missing_partitions)), axis=1, arr=predictions.astype('int'))
+            #                 else:
+            #                     print "missing feature in predict function"
+
+            masking_missing_partitions = np.multiply(new_weights, self.mask_weights)
+            maj = np.apply_along_axis(lambda x: np.argmax(np.bincount(x, weights=masking_missing_partitions)), axis=1,
+                                      arr=predictions.astype('int'))
 
         return maj
 
     def _collect_probas(self, X_list):
-#         print "_collect_probas"
-        """Collect results from clf.predict calls. """     
+        #         print "_collect_probas"
+        """Collect results from clf.predict calls. """
         probs = []
-	self.mask_weights = []
+        self.mask_weights = []
         for i in range(0, len(self.estimators_)):
             clf = self.estimators_[i]
-            X = X_list[i]            
+            X = X_list[i]
             samples_count = len(X)
             if (X.empty == False):
                 """ Samaneh: If there are some partitions in the test cell that 
@@ -237,43 +233,44 @@ class VotingClassifier(BaseEstimator, ClassifierMixin, TransformerMixin):
                 try:
                     p = clf.predict_proba(X)
                     probs.append(p)
-                    #print "p", p
+                    # print "p", p
                     self.mask_weights.append(1)
-                except NotFittedError:                                    
+                except NotFittedError:
                     self.mask_weights.append(0)
-        
-#         print np.array(probs).shape  
+
+        #         print np.array(probs).shape
         return np.asarray(probs)
 
     def _predict_proba(self, X_list):
         """Predict class probabilities for X in 'soft' voting """
-        #if self.voting == 'hard':
-         #   raise AttributeError("predict_proba is not available when"
-          #                       " voting=%r" % self.voting)
+        # if self.voting == 'hard':
+        #   raise AttributeError("predict_proba is not available when"
+        #                       " voting=%r" % self.voting)
         check_is_fitted(self, 'estimators_')
-#         maj = np.apply_along_axis(lambda x: np.argmax(np.bincount(x, weights=masking_missing_partitions)), axis=1, arr=predictions.astype('int'))
+        #         maj = np.apply_along_axis(lambda x: np.argmax(np.bincount(x, weights=masking_missing_partitions)), axis=1, arr=predictions.astype('int'))
 
         new_weights = []
         cnt = 0
-#         print len(self.estimators_), "es"
+        #         print len(self.estimators_), "es"
         for i in range(len(X_list)):
             X = X_list[i]
             cnt += len(X.columns)
-            if (X.empty == False):                    
+            if (X.empty == False):
                 new_weights.append(self.weights[i])
 
-	cp = self._collect_probas(X_list)
+        cp = self._collect_probas(X_list)
 
-#         print "here"
-	
-	#masking_missing_partitions = np.multiply(new_weights, self.mask_weights)
-	import pdb
-	try:
-	    avg = np.average(cp, axis=0, weights=[new_weights[i] for i in range(len(self.mask_weights)) if self.mask_weights[i] > 0])
-	except:
-	    pdb.set_trace()
+        #         print "here"
 
-#         avg = np.average(self._collect_probas(X_list), axis=0, weights=self.weights)
+        # masking_missing_partitions = np.multiply(new_weights, self.mask_weights)
+        import pdb
+        try:
+            avg = np.average(cp, axis=0, weights=[new_weights[i] for i in range(len(self.mask_weights)) if
+                                                  self.mask_weights[i] > 0])
+        except:
+            pdb.set_trace()
+
+        #         avg = np.average(self._collect_probas(X_list), axis=0, weights=self.weights)
         return avg
 
     @property
@@ -341,7 +338,7 @@ class VotingClassifier(BaseEstimator, ClassifierMixin, TransformerMixin):
             samples_count = len(X)
             if (X.empty == False):
                 cnt += 1
-#                 print cnt, len(X.columns)
+                #                 print cnt, len(X.columns)
                 """ Samaneh: If there are some partitions in the test cell that 
                 there is no training partition according to them, there would be no trained incremental learner
                 according to them so the classifier that is not fitted will be disabled by considering
@@ -352,9 +349,9 @@ class VotingClassifier(BaseEstimator, ClassifierMixin, TransformerMixin):
                     self.mask_weights.append(1)
                 except NotFittedError:
                     results.append([0] * samples_count)
-                    print cnt, "Not fitted"
+                    print
+                    cnt, "Not fitted"
                     self.mask_weights.append(0)
-#             else:
-#                 print "missing feature in _predict function"
+        #             else:
+        #                 print "missing feature in _predict function"
         return np.asarray(results).T
-    

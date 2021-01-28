@@ -30,9 +30,9 @@ from numpy.core.umath_tests import inner1d
 
 from sklearn.ensemble import BaseEnsemble
 from sklearn.base import ClassifierMixin, RegressorMixin, is_regressor
-from sklearn.base import six
-from sklearn.externals.six.moves import zip
-from sklearn.externals.six.moves import xrange as range
+import six
+from six.moves import zip
+from six.moves import xrange as range
 from sklearn.ensemble.forest import BaseForest
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from sklearn.tree.tree import BaseDecisionTree
@@ -54,7 +54,6 @@ class BaseWeightBoosting(six.with_metaclass(ABCMeta, BaseEnsemble)):
     Warning: This class should not be used directly. Use derived classes
     instead.
     """
-
     @abstractmethod
     def __init__(self,
                  base_estimator=None,
