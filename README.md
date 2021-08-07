@@ -56,7 +56,7 @@ EXECUTION
 	  -e ENHANCER_FILE_PATH
 		                Path for hg19 enhancers in bed file format
 
-	Example: python EPIP.py -e test_enhancers.bed -g test_genes.bed
+	Example: python EPIP.py -e ../test_enhancers.bed -g ../test_genes.bed
 
 Required inputs
 ---------------------------------------------------------------------------------------------

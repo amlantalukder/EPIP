@@ -2,9 +2,10 @@ import sys,os,getopt
 from common import *
 import Utils
 
+# -----------------------------------------------
 def alignEnhancers(enhancers_file, enhancers_alignment_path, aligned_enhancers_path):
 
-    print "Aligning enhancers with 5 other species..."
+    print("Aligning enhancers with 5 other species...")
 
     os.system(curr_dir + '/LiftOver_3/liftOver -minMatch=0.1 ' + enhancers_file + ' ' + enhancers_alignment_path + '/hg19ToGalGal3.over.chain.gz ' + aligned_enhancers_path + '/chicken_enhancers_align_galGal3.bed ' + aligned_enhancers_path + '/unlifted_chicken.bed')
     os.system(curr_dir + '/LiftOver_3/liftOver -minMatch=0.1 ' + enhancers_file + ' ' + enhancers_alignment_path + '/hg19ToDanRer7.over.chain.gz ' + aligned_enhancers_path + '/zebrafish_enhancers_align_zv9.bed ' + aligned_enhancers_path + '/unlifted_zeb.bed')
@@ -12,6 +13,7 @@ def alignEnhancers(enhancers_file, enhancers_alignment_path, aligned_enhancers_p
     os.system(curr_dir + '/LiftOver_3/liftOver -minMatch=0.1 ' + enhancers_file + ' ' + enhancers_alignment_path + '/hg19ToPanTro4.over.chain.gz ' + aligned_enhancers_path + '/chimp_enhancers_align_panTro4.bed ' + aligned_enhancers_path + '/unlifted_chimp.bed')
     os.system(curr_dir + '/LiftOver_3/liftOver -minMatch=0.1 ' + enhancers_file + ' ' + enhancers_alignment_path + '/hg19ToXenTro3.over.chain.gz ' + aligned_enhancers_path + '/frog_enhancers_align_xenTro3.bed ' + aligned_enhancers_path + '/unlifted_frog.bed')
 
+# -----------------------------------------------
 #load genelocation Data
 def loadgeneLocations(species_path):
     
@@ -38,6 +40,7 @@ def loadgeneLocations(species_path):
         
     return [chimp_genes_dict, mouse_genes_dict, zebfish_genes_dict, chicken_genes_dict, frog_genes_dict]
 
+# -----------------------------------------------
 def loadAlignedEnhancers(aligned_enhancers_path):
 
     chimp_enhancers = readFileInTable(aligned_enhancers_path + "/chimp_enhancers_align_panTro4.bed")
@@ -100,14 +103,18 @@ species = ["chimpanzee", "mouse", "zebrafish", "chicken", "frog"]
 phy_distance = [0.02, 0.46, 1.83, 1.1, 1.43]
 
 # Make a data structure where each promoter points to gene index
-print "Mapping promoter to gene file index ..."
+print("Mapping promoter to gene file index ...")
 human_genes = readFileInTable(promoters_path + "/Six_species/human_gene_hg19.bed")
 human_promoters = readFileInTable(promoters_path + "/promoters")
 
 human_genes.sort(cmp=comparePeaks)
 human_promoters_dict = {}
-for item in human_promoters:
-    human_promoters_dict["_".join(item[:3])] = getOverlappedPeaks(0, len(human_genes), human_genes, item)
+
+overlapped_indices = getOverlappedPeaks2(human_promoters, human_genes)
+
+for i, p in enumerate(human_promoters):
+    if i in overlapped_indices:
+        human_promoters_dict["_".join(p[:3])] = overlapped_indices[i]
 
 # Load other species genes
 ext_gene_loc = loadgeneLocations(promoters_path + "/Six_species/")

@@ -7,10 +7,10 @@ from shutil import copyfile
 from common import *
 import pandas as pd
 import argparse, getopt
-from sklearn.externals import joblib
+import joblib
 sys.path.insert(0, par_dir + '/Codes.TrainTestModels')
-import voting
 
+# -----------------------------------------------
 def getPromoters(gene_file, chrom_size_file):
 
     genes = readFileInTable(gene_file)
@@ -27,10 +27,10 @@ def getPromoters(gene_file, chrom_size_file):
 
     writeDataTableAsText(promoters, DATA_FOLDER + "/Promoters/promoters")
 
-    
+# -----------------------------------------------
 def generateEPPairs(enhancers, promoters, distance):
 
-    print "Gathering all enhancer promoter pairs within 2Mbp distance"
+    print("Gathering all enhancer promoter pairs within 2Mbp distance")
         
     test_data_set = []
 
@@ -49,7 +49,7 @@ def generateEPPairs(enhancers, promoters, distance):
 
         while end > start:
 
-            mid = (start + end)/2
+            mid = (start + end)//2
 
             if promoters[mid][0] > e[0]:
                 end = mid
@@ -85,14 +85,17 @@ def generateEPPairs(enhancers, promoters, distance):
 
     return list(set(test_data_set))
 
+# -----------------------------------------------
 def showError(msg):
     print('----------- Error !!! ------------')
     print(msg)
     print('----------------------------------')
 
+# -----------------------------------------------
 def showArgError(parser):
     parser.parse_args(['-h'])
 
+# -----------------------------------------------
 def combinePredictions(y_pred1, y_pred2):
 
     y_pred = []
@@ -108,6 +111,7 @@ def combinePredictions(y_pred1, y_pred2):
 
     return y_pred
 
+# -----------------------------------------------
 def predict(model_file_balanced, model_file_unbalanced):
 
     print(model_file_balanced, model_file_unbalanced)
@@ -122,13 +126,13 @@ def predict(model_file_balanced, model_file_unbalanced):
 
     for i in range(len(cell_lines)):
 
-        print cell_lines[i]
+        print(cell_lines[i])
 
         #--------- Gather the specified test data ---------
         test_data_with_features = readFileInTable("%s/TempFeats/%s_temp_feats/features_mean_signals_EP_%s.csv" % (DATA_FOLDER, cell_lines[i], cell_lines[i]), ",")
 
         #--------- Separate features from the test data set to train the model ---------
-        print "Separating test data features for prediction..."
+        print("Separating test data features for prediction...")
         names_test = []
         x_test = []
         perc = 10
@@ -143,14 +147,14 @@ def predict(model_file_balanced, model_file_unbalanced):
             perc = showPerc(j, len(test_data_with_features), perc)
 
         if len(x_test) == 0:
-            print "No test data..."
+            print("No test data...")
             continue
 
-        print "Convert the features to dataframe..."
+        print("Convert the features to dataframe...")
         x_test = pd.DataFrame(data=x_test, columns=headers[1:-1])
 
         #--------- Predict --------
-        print "Predicting test data of size", len(x_test)
+        print("Predicting test data of size", len(x_test))
         y_pred1 = model_balanced.predict(x_test)
         y_pred2 = model_unbalanced.predict(x_test)
 

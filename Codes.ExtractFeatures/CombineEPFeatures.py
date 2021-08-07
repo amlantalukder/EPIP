@@ -3,7 +3,7 @@ from time import sleep
 import sys, os, pdb
 import Utils
 
-print "CombineEPFeatures", "Start"
+print("CombineEPFeatures", "Start")
 
 #data_dir = "/home/amlan/Lab_projects/Project6/Samaneh/EPIP/Data"
 #config_fp = "/home/amlan/Lab_projects/Project6/Samaneh/EPIP/Configs/config_extract_features"
@@ -15,11 +15,13 @@ css_dir = data_dir + "/CSS"
 pairs_dir = data_dir + "/" + configs['Pairs_path']
 cells = configs['Cells'].split(',')
 
+# -----------------------------------------------
 def extract_column_names(feat_cols):
     cols = ['name'] + feat_cols + ['corr', 'distance', 'css', 'label']
     #cols = ['name'] + feat_cols + ['len_E', 'len_P', 'len_W', 'label']
     return cols
 
+# -----------------------------------------------
 def calculateSpearmanCorrelation(e_dhs, p_dhs):
 
     n = len(e_dhs)
@@ -31,6 +33,7 @@ def calculateSpearmanCorrelation(e_dhs, p_dhs):
 
     return 1-(6.0 * sum_d_sqr)/(n*(n*n-1))
 
+# -----------------------------------------------
 def getDistance(e, p):
 
     e = e.split("_")
@@ -51,6 +54,7 @@ def getDistance(e, p):
 
     return -1
 
+# -----------------------------------------------
 def getEPLength(e, p):
 
     len_W = getDistance(e, p)
@@ -61,6 +65,7 @@ def getEPLength(e, p):
 
     return len_E, len_P, len_W
 
+# -----------------------------------------------
 dhs_enhancers_df = pd.read_csv(data_dir + "/Enhancer_Features/enhancer_dhs")
 dhs_promoters_df = pd.read_csv(data_dir + "/Promoter_Features/promoter_dhs")
 dhs_enhancers_dict = dhs_enhancers_df.set_index('name_E').T.to_dict('list')
@@ -99,8 +104,8 @@ for cell_name in cells:
     
     feats_columns = extract_column_names(E_cols + P_cols)
 
-    print cell_name
-    print feats_columns
+    print(cell_name)
+    print(feats_columns)
 
     default_column_values = [0] * len(E_cols)
     
@@ -149,8 +154,8 @@ for cell_name in cells:
         if (i+1)*100/len(pairs_df.index) >= perc:
 	    interactions_df.to_csv(combined_EPfeats_file, index=False, header=False, mode="a+")
 	    interactions_df = pd.DataFrame(columns=feats_columns)
-            print perc, '%'
+            print(perc, '%')
             perc += 10
         
     
-print "End"
+print("End")

@@ -28,7 +28,7 @@ for f in files_DHS:
     if not os.path.isfile(data_dir + "/DHS_13cells/" + f):
         continue
 
-    print f
+    print(f)
 
     file_DHS_names.append(f.split(".")[0])
 
@@ -36,32 +36,29 @@ for f in files_DHS:
 
     data_DHS.sort(cmp=comparePeaks)
 
-    for e_key in enhancer_DHS_correlation.keys():
+    enhancers_ = [e_key.split('_') for e_key in enhancer_DHS_correlation]
+    overlapped_indices = getOverlappedPeaks2(enhancers_, data_DHS)
 
-        e = e_key.split("_")
+    for i, e in enumerate(enhancers_):
 
-        indices = getOverlappedPeaks(0, len(data_DHS), data_DHS, e)
-
-        if len(indices) > 0:
-            signal = sum([float(data_DHS[i][3]) for i in indices]) /len(indices)
+        if i in overlapped_indices:
+            signal = sum([float(data_DHS[j][3]) for j in overlapped_indices[i]]) /len(overlapped_indices[i])
         else:
             signal = 0.0
 
-        enhancer_DHS_correlation[e_key].append(signal)
+        enhancer_DHS_correlation['_'.join(e)].append(signal)
 
-    for p_key in promoter_DHS_correlation.keys():
+    promoters_ = [p_key.split('_') for p_key in promoter_DHS_correlation]
+    overlapped_indices = getOverlappedPeaks2(promoters_, data_DHS)
 
-        p = p_key.split("_")
+    for i, p in enumerate(promoters_):
 
-        indices = getOverlappedPeaks(0, len(data_DHS), data_DHS, p)
-
-        if len(indices) > 0:
-            signal = sum([float(data_DHS[i][3]) for i in indices]) /len(indices)
+        if i in overlapped_indices:
+            signal = sum([float(data_DHS[j][3]) for j in overlapped_indices]) /len(overlapped_indices)
         else:
             signal = 0.0
 
-        promoter_DHS_correlation[p_key].append(signal)
+        promoter_DHS_correlation['_'.join(p)].append(signal)
 
-        
 writeDataTableAsCSV([['name_E'] + file_DHS_names] + [[e_key] + enhancer_DHS_correlation[e_key] for e_key in enhancer_DHS_correlation.keys()], data_dir + '/Enhancer_Features/enhancer_dhs')
 writeDataTableAsCSV([['name_P'] + file_DHS_names] + [[p_key] + promoter_DHS_correlation[p_key] for p_key in promoter_DHS_correlation.keys()], data_dir + '/Promoter_Features/promoter_dhs')

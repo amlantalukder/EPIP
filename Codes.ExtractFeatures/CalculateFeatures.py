@@ -4,12 +4,13 @@ import pandas as pd
 import Utils
 import sys, pdb
 
-print "CalculateFeatures", "Start"
+print("CalculateFeatures", "Start")
 
 data_dir = str(sys.argv[1])
 config_fp = str(sys.argv[2])
 show_window_features = str(sys.argv[3])
 
+# -----------------------------------------------
 def main ():
     configs = Utils.read_config_file(config_fp)
     cell_names = configs['Cells'].split(',')
@@ -21,7 +22,7 @@ def main ():
     temp_feats_dir = data_dir + "/TempFeats"
     Utils.make_dir_rename_if_exists(temp_feats_dir)
 
-    print cell_names
+    print(cell_names)
     
     for cell_name in cell_names:    
         peaks_path = "%s/%s" % (peaks_dir, cell_name) 
@@ -62,8 +63,9 @@ def main ():
             	# Window
             	intersection_df = intersect_feat_reg(feat_fp, window_fp, feat_name, peak_type, reg_type='W')
             	save_feature(intersection_df, 'W', window_feats_dir, feat_name, cell_name) 
-    print "End"
+    print("End")
 
+# -----------------------------------------------
 def peak_file_characteristics(peak_fn):
     peak_type = ""
     if "broadPeak" in peak_fn:
@@ -78,14 +80,14 @@ def peak_file_characteristics(peak_fn):
     feat_name = ''
     cell_name = ''
     splt = peak_fn.split('_')
-    print splt
+    print(splt)
     if len(splt) == 4:
     	feat_name = splt[2]
     	cell_name = splt[1]
     
     return peak_type, feat_name, cell_name
 
-
+# -----------------------------------------------
 def intersect_feat_reg(feat_fp, reg_fp, feat_name, peak_type, reg_type):
     reg_bt = pybedtools.BedTool(reg_fp)
     feat_bt = pybedtools.BedTool(feat_fp)
@@ -99,7 +101,7 @@ def intersect_feat_reg(feat_fp, reg_fp, feat_name, peak_type, reg_type):
 	pdb.set_trace()    
     return intersection_df
     
-
+# -----------------------------------------------
 def save_feature(intersection_df, reg_type, feats_dir, feat_name, cell_name):
 #     reg_lb = 'E' if is_enhancer == True else 'P'
     f_name = 'name_' + reg_type 
@@ -114,8 +116,9 @@ def save_feature(intersection_df, reg_type, feats_dir, feat_name, cell_name):
     signals_df.columns = [f_name, featColName]
     signals_df.to_csv(feat_fp, index=False)
     
-    print feat_fp
-    
+    print(feat_fp)
+
+# -----------------------------------------------
 def construct_intersection_header(peak_type, reg_type):
     header = []
     e_header = ["chrom_E", "chromStart_E", "chromEnd_E", "name_E", "score_E", "strand_E"] # "signalValue_E", "pValue_E", "qValue_E", "peak_E"]
