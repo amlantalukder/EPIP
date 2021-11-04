@@ -84,6 +84,7 @@ RESULTS
 The result files are stored under "Results" directory. The result files are created by the name of the cell lines.
 The output format is tab delimited enhancer regions and target gene ids predicted by the model. The example of the output format is following,
  
+<pre>
 chr1_2989176_2989511    ENSG00000169717.5_ACTRT2
 chr1_2230678_2230895    ENSG00000116151.9_MORN1
 chr1_2059932_2059994    ENSG00000234396.3_RP11-181G12.4
@@ -93,7 +94,7 @@ chr1_2231691_2232185    ENSG00000178642.5_AL513477.1
 chr1_1005293_1005547    ENSG00000207607.1_MIR200A
 chr1_1136075_1136463    ENSG00000260179.1_RP5-902P8.12
 chr1_2246556_2246763    ENSG00000243558.1_RP11-181G12.5
-
+</pre>
 
 LICENSE & CREDITS
 -------------------------------------------------------------------------------------------------
