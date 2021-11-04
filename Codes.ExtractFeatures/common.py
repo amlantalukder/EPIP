@@ -1,4 +1,5 @@
 import os
+from functools import cmp_to_key
 
 # -----------------------------------------------
 def writeFile(filename, data, mode="w"):
@@ -177,3 +178,20 @@ def getOverlappedPeaks2(peak_file1, peak_file2, nn_allowed=False):
         if len(indices) > 0: overlapped_indices[i] = indices
 
     return overlapped_indices
+
+# ------------------------------------
+def printDec(msg):
+    horizontal_border = '_' * 50
+    vertical_border = '|'
+
+    l = len(horizontal_border)
+
+    print(horizontal_border)
+    print(' ' * l)
+    msg_part = msg.strip()
+    while len(msg_part) >= l - 4:
+        print(vertical_border + ' ' + msg_part[:l - 4] + ' ' + vertical_border)
+        msg_part = msg_part[l - 4:].strip()
+    print(vertical_border + ' ' + msg_part + ' ' * (l - 3 - len(msg_part)) + vertical_border)
+    print(horizontal_border)
+    print("")

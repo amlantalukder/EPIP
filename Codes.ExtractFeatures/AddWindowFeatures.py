@@ -1,8 +1,9 @@
 import Utils
 import pandas as pd
 import sys
+from common import printDec
 
-print "AddWindowFeatures", "Start"
+printDec("AddWindowFeatures Start")
 
 data_dir = str(sys.argv[1])#
 config_fp = str(sys.argv[2])
@@ -23,20 +24,21 @@ for cell_name in cells:
     windows_df = pd.read_csv(window_feats_file)
     EP_df = pd.read_csv(EP_feats_file)
     
-    print windows_df.shape
-    print EP_df.shape
+    print(windows_df.shape)
+    print(EP_df.shape)
     
     windows_df.reset_index()
     EP_df.reset_index()
     
-    print "EP", EP_df.columns
+    print("EP", EP_df.columns)
     
     merged_df = pd.merge(windows_df, EP_df, how='outer', on='name')
     
-    print "W added", merged_df.shape
+    print("W added", merged_df.shape)
     
     merged_df = merged_df.fillna(0)
     merged_df.reset_index()
     merged_df.to_csv(EPW_feats_file, index=False)
-print "End"
+    
+printDec("AddWindowFeatures End")
     

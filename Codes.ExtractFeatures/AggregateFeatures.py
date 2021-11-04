@@ -2,9 +2,9 @@ import pandas as pd
 import os
 import sys
 import Utils, pdb
+from common import printDec
 
-print "AggregateFeatures", "Start"
-
+printDec("AggregateFeatures Start")
 
 data_dir = str(sys.argv[1])
 config_fp = str(sys.argv[2])
@@ -30,18 +30,17 @@ for cell_name in cells:
             fp = feats_dir + "/" + fn
             feats_dfs.append(pd.read_csv(fp, index_col=False))
 
-        if len(feats_dfs) == 0:
-	    continue
+        if len(feats_dfs) == 0: continue
 
-	merged_df = feats_dfs[0]
-	for i in range(1, len(feats_dfs)):
+        merged_df = feats_dfs[0]
+        for i in range(1, len(feats_dfs)):
             merged_df = pd.merge(merged_df, feats_dfs[i], how='outer', on=name_f)
-        
-        merged_df = merged_df.fillna(0)
-        
-        if (name_f == 'name_W'):
-            merged_df.rename(columns={name_f:'name'}, inplace=True)
-            merged_df.to_csv(outFile, index=False)
-        else:
-            merged_df.to_csv(outFile, index=False)
-print "End"
+            merged_df = merged_df.fillna(0)
+    
+            if (name_f == 'name_W'):
+                merged_df.rename(columns={name_f:'name'}, inplace=True)
+                merged_df.to_csv(outFile, index=False)
+            else:
+                merged_df.to_csv(outFile, index=False)
+
+printDec("AggregateFeatures End")

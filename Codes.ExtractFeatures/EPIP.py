@@ -330,8 +330,7 @@ writeFile(CONFIG_FP_CUSTOMIZED, config)
 # Run feature extraction program
 res = os.system(curr_dir + "/ExtractFeatures.sh " + DATA_FOLDER + " " + CONFIG_FP_CUSTOMIZED + " " + ALLOW_WINDOW_FEATURES + " " + curr_dir)
 
-if res != 0:
-    exit()
+if res != 0: exit()
 
 # Predict ep-pairs with features    
 model_file_balanced = "model_30_perc_8_cell_lines_30_balanced_hard.pkl"

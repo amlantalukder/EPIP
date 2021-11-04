@@ -2,6 +2,8 @@ import sys, random, pdb
 from common import *
 import Utils
 
+printDec('CalculateDHSOverlap Start')
+
 data_dir = str(sys.argv[1])
 config_fp = str(sys.argv[2])
 
@@ -34,7 +36,7 @@ for f in files_DHS:
 
     data_DHS = readFileInTable(data_dir + "/DHS_13cells/" + f)
 
-    data_DHS.sort(cmp=comparePeaks)
+    data_DHS = sorted(data_DHS, key=cmp_to_key(comparePeaks))
 
     enhancers_ = [e_key.split('_') for e_key in enhancer_DHS_correlation]
     overlapped_indices = getOverlappedPeaks2(enhancers_, data_DHS)
@@ -62,3 +64,5 @@ for f in files_DHS:
 
 writeDataTableAsCSV([['name_E'] + file_DHS_names] + [[e_key] + enhancer_DHS_correlation[e_key] for e_key in enhancer_DHS_correlation.keys()], data_dir + '/Enhancer_Features/enhancer_dhs')
 writeDataTableAsCSV([['name_P'] + file_DHS_names] + [[p_key] + promoter_DHS_correlation[p_key] for p_key in promoter_DHS_correlation.keys()], data_dir + '/Promoter_Features/promoter_dhs')
+
+printDec('CalculateDHSOverlap End')

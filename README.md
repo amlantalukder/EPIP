@@ -9,21 +9,19 @@ EPIP is a software used to identify target genes of enhancers in human genome. I
 
 INSTALLATION
 --------------------------------------------------------------------------------------------
-   (1) Install Python 2.7
-   (2) Install pybedtools, scikit learn, numpy and pandas packages for Python.
-   (3) Install bedtools
+   (1) Install python 3.5
+   (2) Install pandas, scikit-learn and joblib packages for python 3.5.
 
 EXECUTION 
 --------------------------------------------------------------------------------------------------------------------------------------
 
-   (1) cd to the "Codes.ExtractFeatures" directory of the software
-      For example, if you put XXXX under your home directory  ( "cd /home/YOURNAME/XXXX")
-      YOURNAME is the your home directory name. 
-   (2) You can run the software by running the script "EPIP.py" with the following command:
+   (1) cd (change directory) to the "EPIP/Codes.ExtractFeatures" directory of the software. 
+   (2) Make sure the "python" environment variable points to the path of python version 3.5.
+   (3) You can run the software by running the script "EPIP.py" with the following command:
    
    ----------------------------------------------------------------------------------------
    
-	usage: EPIP.py [-h] -e ENHANCER_FILE_PATH [-c CELL_LINE] [-g GENE_FILE_PATH]
+	usage: python EPIP.py [-h] -e ENHANCER_FILE_PATH [-c CELL_LINE] [-g GENE_FILE_PATH]
                [-s CHROM_SIZES_FILE_PATH] [-d INTEGER] [-f FEATURE_DIR_PATH]
 
 	Find enhancer targets

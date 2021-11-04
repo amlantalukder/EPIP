@@ -2,8 +2,9 @@ import pandas as pd
 from time import sleep
 import sys, os, pdb
 import Utils
+from common import printDec
 
-print("CombineEPFeatures", "Start")
+printDec("CombineEPFeatures Start")
 
 #data_dir = "/home/amlan/Lab_projects/Project6/Samaneh/EPIP/Data"
 #config_fp = "/home/amlan/Lab_projects/Project6/Samaneh/EPIP/Configs/config_extract_features"
@@ -85,11 +86,11 @@ for cell_name in cells:
     
     if (os.path.isfile(E_features_file)):
         E_feat_df = pd.read_csv(E_features_file)
-	E_feat_dict = E_feat_df.set_index('name_E').T.to_dict('list')
+        E_feat_dict = E_feat_df.set_index('name_E').T.to_dict('list')
         E_cols = list(E_feat_df.columns)[1:]
     else:
         E_feat_dict = {}
-	E_cols = []        
+        E_cols = []        
 
     if (os.path.isfile(P_features_file)):
         P_feat_df = pd.read_csv(P_features_file)   
@@ -115,6 +116,7 @@ for cell_name in cells:
     perc = 10
 
     for i, r in pairs_df.iterrows():
+
         e = r['name_E']
         p = r['name_P']
 
@@ -128,34 +130,34 @@ for cell_name in cells:
         else:
             P_feat = default_column_values
 
-	if e + '-' + p not in extra_feat_dict:
-        	dhs_corr = calculateSpearmanCorrelation(dhs_enhancers_dict[e], dhs_promoters_dict[p])
-		distance = getDistance(e, p)
-		extra_feat_dict[e + '-' + p] = [dhs_corr, distance]
-	else:
-		dhs_corr = extra_feat_dict[e + '-' + p][0]
-		distance = extra_feat_dict[e + '-' + p][1]
-        
+        if e + '-' + p not in extra_feat_dict:
+            dhs_corr = calculateSpearmanCorrelation(dhs_enhancers_dict[e], dhs_promoters_dict[p])
+            distance = getDistance(e, p)
+            extra_feat_dict[e + '-' + p] = [dhs_corr, distance]
+        else:
+            dhs_corr = extra_feat_dict[e + '-' + p][0]
+            distance = extra_feat_dict[e + '-' + p][1]
+
         css = css_feat_dict[(e,p)]
-        
-	#len_E, len_P, len_W = getEPLength(e, p)
- 
+
+        #len_E, len_P, len_W = getEPLength(e, p)
+
         interaction_label = r['label']
         interaction_feat = E_feat + P_feat + [dhs_corr, distance, css]  # I assumed this order in writing extract_column_names function.
-                                            # If this order is changed extract_column_names should be changed.
-	#interaction_feat = E_feat + P_feat + [len_E, len_P, len_W]
+        # If this order is changed extract_column_names should be changed.
+        #interaction_feat = E_feat + P_feat + [len_E, len_P, len_W]
         interaction_name = "%s-%s" % (e, p)
         interaction_row = [interaction_name] + interaction_feat + [interaction_label]
-	try:
-        	interactions_df.loc[i] = interaction_row
-	except:
-		pdb.set_trace()
+        try:
+            interactions_df.loc[i] = interaction_row
+        except:
+            pdb.set_trace()
 
         if (i+1)*100/len(pairs_df.index) >= perc:
-	    interactions_df.to_csv(combined_EPfeats_file, index=False, header=False, mode="a+")
-	    interactions_df = pd.DataFrame(columns=feats_columns)
-            print(perc, '%')
+            interactions_df.to_csv(combined_EPfeats_file, index=False, header=False, mode="a+")
+            interactions_df = pd.DataFrame(columns=feats_columns)
+            print('{}%'.format(perc))
             perc += 10
         
     
-print("End")
+printDec("CombineEPFeatures End")

@@ -13,13 +13,13 @@ classification estimators.
 
 import numpy as np
 import pandas as pd
+import six
 
 from sklearn.base import BaseEstimator
 from sklearn.base import ClassifierMixin
 from sklearn.base import TransformerMixin
 from sklearn.base import clone
 from sklearn.preprocessing import LabelEncoder
-from sklearn.externals import six
 from sklearn.utils.validation import check_is_fitted
 from sklearn.exceptions import NotFittedError
 from time import sleep

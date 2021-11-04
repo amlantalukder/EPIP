@@ -2,11 +2,14 @@ import sys,os,getopt
 from common import *
 import Utils
 
+printDec("CalculateCSS Start")
+
 # -----------------------------------------------
 def alignEnhancers(enhancers_file, enhancers_alignment_path, aligned_enhancers_path):
 
     print("Aligning enhancers with 5 other species...")
 
+    os.system('chmod +x ' + curr_dir + '/LiftOver_3/liftOver')
     os.system(curr_dir + '/LiftOver_3/liftOver -minMatch=0.1 ' + enhancers_file + ' ' + enhancers_alignment_path + '/hg19ToGalGal3.over.chain.gz ' + aligned_enhancers_path + '/chicken_enhancers_align_galGal3.bed ' + aligned_enhancers_path + '/unlifted_chicken.bed')
     os.system(curr_dir + '/LiftOver_3/liftOver -minMatch=0.1 ' + enhancers_file + ' ' + enhancers_alignment_path + '/hg19ToDanRer7.over.chain.gz ' + aligned_enhancers_path + '/zebrafish_enhancers_align_zv9.bed ' + aligned_enhancers_path + '/unlifted_zeb.bed')
     os.system(curr_dir + '/LiftOver_3/liftOver -minMatch=0.1 ' + enhancers_file + ' ' + enhancers_alignment_path + '/hg19ToMm10.over.chain.gz ' + aligned_enhancers_path + '/mouse_enhancers_align_mm10.bed ' + aligned_enhancers_path + '/unlifted_mm.bed')
@@ -107,7 +110,7 @@ print("Mapping promoter to gene file index ...")
 human_genes = readFileInTable(promoters_path + "/Six_species/human_gene_hg19.bed")
 human_promoters = readFileInTable(promoters_path + "/promoters")
 
-human_genes.sort(cmp=comparePeaks)
+human_genes = sorted(human_genes, key = cmp_to_key(comparePeaks))
 human_promoters_dict = {}
 
 overlapped_indices = getOverlappedPeaks2(human_promoters, human_genes)
@@ -169,5 +172,4 @@ for c in cell_lines:
 
     writeDataTableAsCSV([output_header] + css_output, data_dir + "/CSS/" + c + "_pairs_css")
         
-                    
-
+printDec("CalculateCSS End")
