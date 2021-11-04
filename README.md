@@ -9,15 +9,15 @@ EPIP is a software used to identify target genes of enhancers in human genome. I
 
 INSTALLATION
 --------------------------------------------------------------------------------------------
-   (1) Install python 3.5
-   (2) Install pandas, scikit-learn and joblib packages for python 3.5.
+   1. Install python 3.5
+   2. Install pandas, scikit-learn and joblib packages for python 3.5.
 
 EXECUTION 
 --------------------------------------------------------------------------------------------------------------------------------------
 
-   (1) cd (change directory) to the "EPIP/Codes.ExtractFeatures" directory of the software. 
-   (2) Make sure the "python" environment variable points to the path of python version 3.5.
-   (3) You can run the software by running the script "EPIP.py" with the following command:
+   1. cd (change directory) to the "EPIP/Codes.ExtractFeatures" directory of the software. 
+   2. Make sure the "python" environment variable points to the path of python version 3.5.
+   3. You can run the software by running the script "EPIP.py" with the following command:
    
    ----------------------------------------------------------------------------------------
    
@@ -83,18 +83,17 @@ RESULTS
 ----------------------------------------------------------------------------------------------------------------------------------
 The result files are stored under "Results" directory. The result files are created by the name of the cell lines.
 The output format is tab delimited enhancer regions and target gene ids predicted by the model. The example of the output format is following,
- 
-<pre>
-chr1_2989176_2989511    ENSG00000169717.5_ACTRT2
-chr1_2230678_2230895    ENSG00000116151.9_MORN1
-chr1_2059932_2059994    ENSG00000234396.3_RP11-181G12.4
-chr1_3581269_3581645    ENSG00000272088.1_RP11-168F9.2
-chr1_1978731_1978937    ENSG00000169885.5_CALML6
-chr1_2231691_2232185    ENSG00000178642.5_AL513477.1
-chr1_1005293_1005547    ENSG00000207607.1_MIR200A
-chr1_1136075_1136463    ENSG00000260179.1_RP5-902P8.12
-chr1_2246556_2246763    ENSG00000243558.1_RP11-181G12.5
-</pre>
+
+	chr1_2989176_2989511    ENSG00000169717.5_ACTRT2
+	chr1_2230678_2230895    ENSG00000116151.9_MORN1
+	chr1_2059932_2059994    ENSG00000234396.3_RP11-181G12.4
+	chr1_3581269_3581645    ENSG00000272088.1_RP11-168F9.2
+	chr1_1978731_1978937    ENSG00000169885.5_CALML6
+	chr1_2231691_2232185    ENSG00000178642.5_AL513477.1
+	chr1_1005293_1005547    ENSG00000207607.1_MIR200A
+	chr1_1136075_1136463    ENSG00000260179.1_RP5-902P8.12
+	chr1_2246556_2246763    ENSG00000243558.1_RP11-181G12.5
+
 
 LICENSE & CREDITS
 -------------------------------------------------------------------------------------------------
