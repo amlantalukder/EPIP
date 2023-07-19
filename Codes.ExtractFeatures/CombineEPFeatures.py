@@ -138,7 +138,10 @@ for cell_name in cells:
             dhs_corr = extra_feat_dict[e + '-' + p][0]
             distance = extra_feat_dict[e + '-' + p][1]
 
-        css = css_feat_dict[(e,p)]
+        if (e, p) in css_feat_dict:
+            css = css_feat_dict[(e, p)]
+        else:
+            css = 0
 
         #len_E, len_P, len_W = getEPLength(e, p)
 
