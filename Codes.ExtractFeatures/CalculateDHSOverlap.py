@@ -1,4 +1,6 @@
-import sys, random, pdb
+import sys
+import random
+import pdb
 from common import *
 import Utils
 
@@ -7,8 +9,8 @@ printDec('CalculateDHSOverlap Start')
 data_dir = str(sys.argv[1])
 config_fp = str(sys.argv[2])
 
-#data_dir = "/home/amlan/Lab_projects/Project6/Samaneh/EPIP/Data"
-#config_fp = "/home/amlan/Lab_projects/Project6/Samaneh/EPIP/Configs/config_extract_11_features"
+# data_dir = "/home/amlan/Lab_projects/Project6/Samaneh/EPIP/Data"
+# config_fp = "/home/amlan/Lab_projects/Project6/Samaneh/EPIP/Configs/config_extract_11_features"
 
 configs = Utils.read_config_file(config_fp)
 
@@ -44,7 +46,7 @@ for f in files_DHS:
     for i, e in enumerate(enhancers_):
 
         if i in overlapped_indices:
-            signal = sum([float(data_DHS[j][3]) for j in overlapped_indices[i]]) /len(overlapped_indices[i])
+            signal = sum([float(data_DHS[j][3]) for j in overlapped_indices[i]]) / len(overlapped_indices[i])
         else:
             signal = 0.0
 
@@ -56,7 +58,7 @@ for f in files_DHS:
     for i, p in enumerate(promoters_):
 
         if i in overlapped_indices:
-            signal = sum([float(data_DHS[j][3]) for j in overlapped_indices]) /len(overlapped_indices)
+            signal = sum([float(data_DHS[j][3]) for j in overlapped_indices]) / len(overlapped_indices)
         else:
             signal = 0.0
 

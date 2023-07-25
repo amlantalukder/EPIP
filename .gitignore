@@ -1,6 +1,7 @@
 .DS_Store
 */.DS_Store
 Results/*
-Data/*
-venv
+venv*
+*/venv*
 */__pycache__/
+Data/TempFeats/*

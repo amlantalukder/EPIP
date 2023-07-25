@@ -1,25 +1,33 @@
-import sys, random, pdb, os
+import getopt
+import argparse
+import joblib
+import pandas as pd
+from common import *
+from shutil import copyfile
+import sys
+import random
+import pdb
+import os
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
 par_dir = os.path.abspath(os.path.join(curr_dir, os.pardir))
 
-from shutil import copyfile
-from common import *
-import pandas as pd
-import argparse, getopt
-import joblib
 sys.path.insert(0, par_dir + '/Codes.TrainTestModels')
 
 # -----------------------------------------------
+
+
 def getPromoters(gene_file, chrom_size_file):
 
     genes = readFileInTable(gene_file)
 
     tss = [[item[0]] + ([item[1], item[1]] if item[5] == "+" else [item[2], item[2]]) + [item[3], item[4], item[5]] for item in genes]
-    
+
     writeDataTableAsText(tss, DATA_FOLDER + "/Promoters/tss.bed")
 
-    os.system("bedtools slop -s -i " + DATA_FOLDER + "/Promoters/tss.bed -g " + chrom_size_file + " -l 1000 -r 100 > " + DATA_FOLDER + "/Promoters/promoters_with_genes.bed")
+    bedtools = curr_dir + "/Bedtools/slopBed"
+    os.system("chmod +x " + bedtools)
+    os.system(bedtools + " -s -i " + DATA_FOLDER + "/Promoters/tss.bed -g " + chrom_size_file + " -l 1000 -r 100 > " + DATA_FOLDER + "/Promoters/promoters_with_genes.bed")
 
     promoters = readFileInTable(DATA_FOLDER + "/Promoters/promoters_with_genes.bed")
 
@@ -28,15 +36,17 @@ def getPromoters(gene_file, chrom_size_file):
     writeDataTableAsText(promoters, DATA_FOLDER + "/Promoters/promoters")
 
 # -----------------------------------------------
+
+
 def generateEPPairs(enhancers, promoters, distance):
 
     print("Gathering all enhancer promoter pairs within 2Mbp distance")
-        
+
     test_data_set = []
 
     perc = 10
     j = 0
-    
+
     for e in enhancers:
 
         left_boundary = int(e[1]) - 2000000
@@ -45,7 +55,7 @@ def generateEPPairs(enhancers, promoters, distance):
         start = 0
         end = len(promoters)
 
-        relevant_promoters = [] 
+        relevant_promoters = []
 
         while end > start:
 
@@ -76,7 +86,7 @@ def generateEPPairs(enhancers, promoters, distance):
                 break
 
         e_id = "_".join(e[:3])
-        
+
         test_data_set += [(e_id, "_".join(p[:3]), "1") for p in relevant_promoters]
 
         j += 1
@@ -86,16 +96,22 @@ def generateEPPairs(enhancers, promoters, distance):
     return list(set(test_data_set))
 
 # -----------------------------------------------
+
+
 def showError(msg):
     print('----------- Error !!! ------------')
     print(msg)
     print('----------------------------------')
 
 # -----------------------------------------------
+
+
 def showArgError(parser):
     parser.parse_args(['-h'])
 
 # -----------------------------------------------
+
+
 def combinePredictions(y_pred1, y_pred2):
 
     y_pred = []
@@ -112,11 +128,13 @@ def combinePredictions(y_pred1, y_pred2):
     return y_pred
 
 # -----------------------------------------------
+
+
 def predict(model_file_balanced, model_file_unbalanced):
 
     print(model_file_balanced, model_file_unbalanced)
 
-    #--------- Load model ---------
+    # --------- Load model ---------
     model_balanced = joblib.load("%s/%s" % (MODEL_DIR, model_file_balanced))
     model_unbalanced = joblib.load("%s/%s" % (MODEL_DIR, model_file_unbalanced))
 
@@ -128,22 +146,22 @@ def predict(model_file_balanced, model_file_unbalanced):
 
         print(cell_lines[i])
 
-        #--------- Gather the specified test data ---------
+        # --------- Gather the specified test data ---------
         test_data_with_features = readFileInTable("%s/TempFeats/%s_temp_feats/features_mean_signals_EP_%s.csv" % (DATA_FOLDER, cell_lines[i], cell_lines[i]), ",")
 
-        #--------- Separate features from the test data set to train the model ---------
+        # --------- Separate features from the test data set to train the model ---------
         print("Separating test data features for prediction...")
         names_test = []
         x_test = []
         perc = 10
 
         headers = test_data_with_features[0]
-        
+
         for j in range(1, len(test_data_with_features)):
 
             names_test.append(test_data_with_features[j][0])
             x_test.append(test_data_with_features[j][1:-1])
-            
+
             perc = showPerc(j, len(test_data_with_features), perc)
 
         if len(x_test) == 0:
@@ -153,7 +171,7 @@ def predict(model_file_balanced, model_file_unbalanced):
         print("Convert the features to dataframe...")
         x_test = pd.DataFrame(data=x_test, columns=headers[1:-1])
 
-        #--------- Predict --------
+        # --------- Predict --------
         print("Predicting test data of size", len(x_test))
         y_pred1 = model_balanced.predict(x_test)
         y_pred2 = model_unbalanced.predict(x_test)
@@ -169,10 +187,11 @@ def predict(model_file_balanced, model_file_unbalanced):
 
                 output.append([eid, gene])
 
-        output.sort(key=lambda x:(x[0], x[1]))
+        output.sort(key=lambda x: (x[0], x[1]))
 
-        #--------- Save the prediction results ----------
+        # --------- Save the prediction results ----------
         writeDataTableAsText(output, "%s/%s" % (outdir, cell_lines[i]))
+
 
 DATA_FOLDER = par_dir + "/Data"
 RESULTS_FOLDER = par_dir + "/Results"
@@ -192,20 +211,20 @@ ep_pairs_path_system = configs['Pairs_path']
 parser = argparse.ArgumentParser(description='Find enhancer targets', epilog='Example: python EPIP.py -e test_enhancers.bed -g test_genes.bed')
 required_arg = parser.add_argument_group('required arguments')
 required_arg.add_argument('-e', help="Path for hg19 enhancers in bed file format", required=True, metavar="ENHANCER_FILE_PATH")
-parser.add_argument('-c', default="None", help='Comma delimited cell lines among {' + cells_default + '}.' + \
+parser.add_argument('-c', default="None", help='Comma delimited cell lines among {' + cells_default + '}.' +
                     'In order to predict for a cell line that is not in the list above, user must provide the file path of the features to use for that cell line with "-f" command', metavar="CELL_LINE")
 parser.add_argument('-g', default="None", help='Path for human genes in bed file format (default: Use human Gencode 19)', metavar="GENE_FILE_PATH")
 parser.add_argument('-s', default="None", help='Path for chromosome sizes file of human genome in tab delimited file format (default: Use human Gencode 19 chrom sizes)', metavar="CHROM_SIZES_FILE_PATH")
 parser.add_argument('-d', type=int, default="2000000", help='Maximum distance between enhancers and promoters (default: 2 Mbp)', metavar="INTEGER")
-parser.add_argument('-f', default="None", help='Path of the directory where the feature peak files for each cell line are specified in the following formats ' + \
-                    'feature_<cellline>_<feature_name>_peaks.[bed|narrowPeak|broadPeak]. <feature_name> must be among the following features.\n' + \
+parser.add_argument('-f', default="None", help='Path of the directory where the feature peak files for each cell line are specified in the following formats ' +
+                    'feature_<cellline>_<feature_name>_peaks.[bed|narrowPeak|broadPeak]. <feature_name> must be among the following features.\n' +
                     '{' + features + '}', metavar="FEATURE_DIR_PATH")
 
 if '-h' in sys.argv[1:]:
     showArgError(parser)
     exit()
 
-opts,args=getopt.getopt(sys.argv[1:],'e:g:s:c:d:f:')
+opts, args = getopt.getopt(sys.argv[1:], 'e:g:s:c:d:f:')
 
 enhancer_path = ""
 cells = cells_default
@@ -213,7 +232,7 @@ gene_path = DATA_FOLDER + "/Promoters/genes_hg19_gencode.bed"
 genome_chrom_sizes_path = DATA_FOLDER + '/Promoters/hg19.chrom.sizes'
 distance = 2000000
 feature_dir = "None"
-epilog='Example of use'
+epilog = 'Example of use'
 for i in opts:
     if i[0] == '-e':
         enhancer_path = i[1]
@@ -288,10 +307,10 @@ if feature_dir != "None":
         if feature_ext not in ['bed', 'narrowPeak', 'broadPeak']:
             showError('The following feature file path must be in .bed or .narrowPeak or .broadPeak format' + '\n' + item)
             exit()
-        
+
         if not os.path.isdir(new_feature_dir):
             os.mkdir(new_feature_dir)
-                
+
         copyfile(feature_dir + '/' + item, new_feature_dir + '/' + item)
 
         new_features.append(feature_name)
@@ -310,7 +329,7 @@ getPromoters(gene_path, genome_chrom_sizes_path)
 
 # Create ep-pairs
 promoters = readFileInTable(DATA_FOLDER + "/" + promoter_path_system + "/promoters_with_genes.bed")
-#promoters = promoters[:100]
+# promoters = promoters[:100]
 promoters_gene_dict = dict([["_".join(item[:3]), item[3]] for item in promoters])
 ep_pairs = generateEPPairs(enhancers, promoters, distance)
 
@@ -330,9 +349,10 @@ writeFile(CONFIG_FP_CUSTOMIZED, config)
 # Run feature extraction program
 res = os.system(curr_dir + "/ExtractFeatures.sh " + DATA_FOLDER + " " + CONFIG_FP_CUSTOMIZED + " " + ALLOW_WINDOW_FEATURES + " " + curr_dir)
 
-if res != 0: exit()
+if res != 0:
+    exit()
 
-# Predict ep-pairs with features    
+# Predict ep-pairs with features
 model_file_balanced = "model_30_perc_8_cell_lines_30_balanced_hard.pkl"
 model_file_unbalanced = "model_30_perc_8_cell_lines_30_unbalanced_hard.pkl"
 

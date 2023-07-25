@@ -9,8 +9,8 @@ EPIP is a software used to identify target genes of enhancers in human genome. I
 
 INSTALLATION
 --------------------------------------------------------------------------------------------
-   1. Install python 3.5
-   2. Install pandas, scikit-learn and joblib packages for python 3.5.
+   1. Install python 3.7
+   2. pip install -r requirements.txt
 
 EXECUTION 
 --------------------------------------------------------------------------------------------------------------------------------------

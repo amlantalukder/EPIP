@@ -1,8 +1,9 @@
 from Utils import *
-#import pybedtools
+# import pybedtools
 import pandas as pd
 import Utils
-import sys, pdb
+import sys
+import pdb
 
 from common import readFileInTable, getOverlappedPeaks2, printDec
 
@@ -13,15 +14,17 @@ config_fp = str(sys.argv[2])
 show_window_features = str(sys.argv[3])
 
 # -----------------------------------------------
+
+
 def construct_intersection_header(peak_type, reg_type):
     header = []
-    e_header = ["chrom_E", "chromStart_E", "chromEnd_E", "name_E", "score_E", "strand_E"] # "signalValue_E", "pValue_E", "qValue_E", "peak_E"]
-    p_header = ["chrom_P", "chromStart_P", "chromEnd_P", "name_P", "score_P", "strand_P"] # "signalValue_P", "pValue_P", "qValue_P", "peak_P"]
+    e_header = ["chrom_E", "chromStart_E", "chromEnd_E", "name_E", "score_E", "strand_E"]  # "signalValue_E", "pValue_E", "qValue_E", "peak_E"]
+    p_header = ["chrom_P", "chromStart_P", "chromEnd_P", "name_P", "score_P", "strand_P"]  # "signalValue_P", "pValue_P", "qValue_P", "peak_P"]
     w_header = ["chrom_W", "chromStart_W", "chromEnd_W", "name_W"]
     narrow_header = ["chrom_F", "chromStart_F", "chromEnd_F", "name_F", "score_F", "strand_F", "signalValue_F", "pValue_F", "qValue_F", "peak_F"]
     broad_header = ["chrom_F", "chromStart_F", "chromEnd_F", "name_F", "score_F", "strand_F", "signalValue_F", "pValue_F", "qValue_F"]
     bed_header = ["chrom_F", "chromStart_F", "chromEnd_F", "name_F", "strand_F"]
-    
+
     if (reg_type == 'E'):
         if (peak_type == "broadPeak"):
             header = e_header + broad_header
@@ -43,10 +46,12 @@ def construct_intersection_header(peak_type, reg_type):
             header = w_header + narrow_header
         elif (peak_type == "bed"):
             header = w_header + bed_header
-            
+
     return header
 
 # -----------------------------------------------
+
+
 def peak_file_characteristics(peak_fn):
     peak_type = ""
     if "broadPeak" in peak_fn:
@@ -54,23 +59,25 @@ def peak_file_characteristics(peak_fn):
     elif "narrowPeak" in peak_fn:
         peak_type = "narrowPeak"
     elif "bed" in peak_fn:
-	    peak_type = "bed"
+        peak_type = "bed"
     else:
         raise ValueError('The file format is not supported')
-    
+
     feat_name = ''
     cell_name = ''
     splt = peak_fn.split('_')
     print(splt)
     if len(splt) == 4:
-    	feat_name = splt[2]
-    	cell_name = splt[1]
-    
+        feat_name = splt[2]
+        cell_name = splt[1]
+
     return peak_type, feat_name, cell_name
 
 # -----------------------------------------------
+
+
 def intersect_feat_reg(feat_fp, reg_fp, feat_name, peak_type, reg_type):
-    
+
     data_feat = readFileInTable(feat_fp)
     data_reg = readFileInTable(reg_fp)
 
@@ -98,13 +105,15 @@ def intersect_feat_reg(feat_fp, reg_fp, feat_name, peak_type, reg_type):
 	    pdb.set_trace()    
     return intersection_df
     '''
-    
+
 # -----------------------------------------------
+
+
 def save_feature(intersection_df, reg_type, feats_dir, feat_name, cell_name):
-    #reg_lb = 'E' if is_enhancer == True else 'P'
-    f_name = 'name_' + reg_type 
+    # reg_lb = 'E' if is_enhancer == True else 'P'
+    f_name = 'name_' + reg_type
     feat_fp = "%s/%s_%s_%s.csv" % (feats_dir, cell_name, feat_name, reg_type)
-    
+
     intersection_df['signalValue_F'] = intersection_df['signalValue_F'].astype('float64')
     grouped = intersection_df.loc[:, [f_name, 'signalValue_F']].groupby(f_name).mean()
 
@@ -116,7 +125,9 @@ def save_feature(intersection_df, reg_type, feats_dir, feat_name, cell_name):
     print(feat_fp)
 
 # -----------------------------------------------
-def main ():
+
+
+def main():
     configs = Utils.read_config_file(config_fp)
     cell_names = configs['Cells'].split(',')
     features = configs['Features'].split(',')
@@ -128,14 +139,14 @@ def main ():
     Utils.make_dir_rename_if_exists(temp_feats_dir)
 
     print(cell_names)
-    
-    for cell_name in cell_names:    
-        peaks_path = "%s/%s" % (peaks_dir, cell_name) 
+
+    for cell_name in cell_names:
+        peaks_path = "%s/%s" % (peaks_dir, cell_name)
         enhancer_fp = "%s/enhancers" % (enhancers_dir)
         promoter_fp = "%s/promoters" % (promoters_dir)
         window_fp = "%s/%s_windows.intervals" % (windows_dir, cell_name)
         feats_dir = "%s/%s_temp_feats" % (temp_feats_dir, cell_name)
-        
+
         enhancer_feats_dir = "%s/feats_E" % (feats_dir)
         promoter_feats_dir = "%s/feats_P" % (feats_dir)
         window_feats_dir = "%s/feats_W" % (feats_dir)
@@ -153,22 +164,23 @@ def main ():
 
             if feat_name not in features:
                 continue
-            
+
             feat_fp = "%s/%s" % (peaks_path, fn)
-            
+
             # Enhancer
             intersection_df = intersect_feat_reg(feat_fp, enhancer_fp, feat_name, peak_type, reg_type='E')
             save_feature(intersection_df, 'E', enhancer_feats_dir, feat_name, cell_name)
-              
+
             # Promoter
             intersection_df = intersect_feat_reg(feat_fp, promoter_fp, feat_name, peak_type, reg_type='P')
-            save_feature(intersection_df, 'P', promoter_feats_dir, feat_name, cell_name) 
+            save_feature(intersection_df, 'P', promoter_feats_dir, feat_name, cell_name)
 
             if show_window_features == "1":
                 # Window
                 intersection_df = intersect_feat_reg(feat_fp, window_fp, feat_name, peak_type, reg_type='W')
-                save_feature(intersection_df, 'W', window_feats_dir, feat_name, cell_name) 
-    
+                save_feature(intersection_df, 'W', window_feats_dir, feat_name, cell_name)
+
     printDec("CalculateFeatures End")
+
 
 main()

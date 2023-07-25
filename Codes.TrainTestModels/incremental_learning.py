@@ -26,7 +26,6 @@ The module structure is the following:
 from abc import ABCMeta, abstractmethod
 
 import numpy as np
-from numpy.core.umath_tests import inner1d
 
 from sklearn.ensemble import BaseEnsemble
 from sklearn.base import ClassifierMixin, RegressorMixin, is_regressor
@@ -164,8 +163,7 @@ class BaseWeightBoosting(six.with_metaclass(ABCMeta, BaseEnsemble)):
             if iboost < self.n_estimators - 1:
                 # Normalize
                 sample_weight /= sample_weight_sum
-                
-        
+
         # Storing WLs
         self.all_ds_estimators_ += self.estimators_
         self.all_ds_estimator_weights_ = np.concatenate((self.all_ds_estimator_weights_, self.estimator_weights_))
@@ -374,6 +372,7 @@ class AdaBoostClassifier(BaseWeightBoosting, ClassifierMixin):
     .. [2] J. Zhu, H. Zou, S. Rosset, T. Hastie, "Multi-class AdaBoost", 2009.
 
     """
+
     def __init__(self,
                  base_estimator=None,
                  n_estimators=50,
@@ -528,7 +527,7 @@ class AdaBoostClassifier(BaseWeightBoosting, ClassifierMixin):
         # Boost weight using multi-class AdaBoost SAMME.R alg
         estimator_weight = (-1. * self.learning_rate
                                 * (((n_classes - 1.) / n_classes) *
-                                   inner1d(y_coding, np.log(y_predict_proba))))
+                                   np.inner(y_coding, np.log(y_predict_proba))))
 
         # Only boost the weights if it will fit again
         if not iboost == self.n_estimators - 1:
@@ -587,7 +586,7 @@ class AdaBoostClassifier(BaseWeightBoosting, ClassifierMixin):
 
         return sample_weight, estimator_weight, estimator_error
 
-    def predict(self, X):        
+    def predict(self, X):
         """Predict classes for X.
 
         The predicted class of an input sample is computed as the weighted mean
@@ -643,7 +642,7 @@ class AdaBoostClassifier(BaseWeightBoosting, ClassifierMixin):
                 yield np.array(classes.take(
                     np.argmax(pred, axis=1), axis=0))
 
-    def decision_function(self, X):        
+    def decision_function(self, X):
         """Compute the decision function of ``X``.
 
         Parameters
@@ -921,6 +920,7 @@ class AdaBoostRegressor(BaseWeightBoosting, RegressorMixin):
     .. [2] H. Drucker, "Improving Regressors using Boosting Techniques", 1997.
 
     """
+
     def __init__(self,
                  base_estimator=None,
                  n_estimators=50,

@@ -263,12 +263,8 @@ class VotingClassifier(BaseEstimator, ClassifierMixin, TransformerMixin):
         #         print "here"
 
         # masking_missing_partitions = np.multiply(new_weights, self.mask_weights)
-        import pdb
-        try:
-            avg = np.average(cp, axis=0, weights=[new_weights[i] for i in range(len(self.mask_weights)) if
-                                                  self.mask_weights[i] > 0])
-        except:
-            pdb.set_trace()
+        avg = np.average(cp, axis=0, weights=[new_weights[i] for i in range(len(self.mask_weights)) if
+                                              self.mask_weights[i] > 0])
 
         #         avg = np.average(self._collect_probas(X_list), axis=0, weights=self.weights)
         return avg

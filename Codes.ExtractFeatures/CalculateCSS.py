@@ -3,6 +3,7 @@ import os
 import getopt
 from common import *
 import Utils
+import platform
 
 printDec("CalculateCSS Start")
 
@@ -13,16 +14,20 @@ def alignEnhancers(enhancers_file, enhancers_alignment_path, aligned_enhancers_p
 
     print("Aligning enhancers with 5 other species...")
 
+    liftover = curr_dir + '/LiftOver_3/liftOver'
+    if platform.system() == 'Darwin':
+        liftover += '_mac'
+
     os.system('chmod +x ' + curr_dir + '/LiftOver_3/liftOver')
-    os.system(curr_dir + '/LiftOver_3/liftOver -minMatch=0.1 ' + enhancers_file + ' ' + enhancers_alignment_path + '/hg19ToGalGal3.over.chain.gz ' +
+    os.system(liftover + ' -minMatch=0.1 ' + enhancers_file + ' ' + enhancers_alignment_path + '/hg19ToGalGal3.over.chain.gz ' +
               aligned_enhancers_path + '/chicken_enhancers_align_galGal3.bed ' + aligned_enhancers_path + '/unlifted_chicken.bed')
-    os.system(curr_dir + '/LiftOver_3/liftOver -minMatch=0.1 ' + enhancers_file + ' ' + enhancers_alignment_path + '/hg19ToDanRer7.over.chain.gz ' +
+    os.system(liftover + ' -minMatch=0.1 ' + enhancers_file + ' ' + enhancers_alignment_path + '/hg19ToDanRer7.over.chain.gz ' +
               aligned_enhancers_path + '/zebrafish_enhancers_align_zv9.bed ' + aligned_enhancers_path + '/unlifted_zeb.bed')
-    os.system(curr_dir + '/LiftOver_3/liftOver -minMatch=0.1 ' + enhancers_file + ' ' + enhancers_alignment_path + '/hg19ToMm10.over.chain.gz ' +
+    os.system(liftover + ' -minMatch=0.1 ' + enhancers_file + ' ' + enhancers_alignment_path + '/hg19ToMm10.over.chain.gz ' +
               aligned_enhancers_path + '/mouse_enhancers_align_mm10.bed ' + aligned_enhancers_path + '/unlifted_mm.bed')
-    os.system(curr_dir + '/LiftOver_3/liftOver -minMatch=0.1 ' + enhancers_file + ' ' + enhancers_alignment_path + '/hg19ToPanTro4.over.chain.gz ' +
+    os.system(liftover + ' -minMatch=0.1 ' + enhancers_file + ' ' + enhancers_alignment_path + '/hg19ToPanTro4.over.chain.gz ' +
               aligned_enhancers_path + '/chimp_enhancers_align_panTro4.bed ' + aligned_enhancers_path + '/unlifted_chimp.bed')
-    os.system(curr_dir + '/LiftOver_3/liftOver -minMatch=0.1 ' + enhancers_file + ' ' + enhancers_alignment_path + '/hg19ToXenTro3.over.chain.gz ' +
+    os.system(liftover + ' -minMatch=0.1 ' + enhancers_file + ' ' + enhancers_alignment_path + '/hg19ToXenTro3.over.chain.gz ' +
               aligned_enhancers_path + '/frog_enhancers_align_xenTro3.bed ' + aligned_enhancers_path + '/unlifted_frog.bed')
 
 # -----------------------------------------------
