@@ -11,10 +11,11 @@ INSTALLATION
 --------------------------------------------------------------------------------------------
    1. Install python 3.7
    2. Run the following commands to install python packages
-   
-	```
-	pip install -r requirements.txt
-	```
+
+		```
+		pip install -r requirements.txt
+		```
+	
 
 EXECUTION 
 --------------------------------------------------------------------------------------------------------------------------------------
