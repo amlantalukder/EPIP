@@ -4,7 +4,7 @@ Author: Amlan Talukder
 
 Date: May 28,2018
 
-EPIP is a software used to identify target genes of enhancers in human genome. It is developed by the computational System biology group at UCF.
+EPIP is a software used to identify target genes of enhancers in human genome. It was developed by the computational System biology group at UCF.
 
 
 INSTALLATION
